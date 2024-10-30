@@ -1,5 +1,7 @@
 # Tietoliikenteen_sovellusprojekti2024
 
+![Arkkitehtuurikaavio](kuvat/arkkitehtuurimalli.png)
+
 ## Tehtävän kuvaus
 
 Projektin tehtävänä on suunnitella **Thingy**-laitteelle client-sovellus, joka suorittaa seuraavat toiminnot:
