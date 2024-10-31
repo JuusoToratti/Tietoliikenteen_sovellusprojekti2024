@@ -1,6 +1,6 @@
 # Tietoliikenteen_sovellusprojekti2024
 
-![Arkkitehtuurikaavio](kuvat/arkkitehtuurimalli.png)
+
 
 ## Tehtävän kuvaus
 
