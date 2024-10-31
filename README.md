@@ -1,6 +1,6 @@
 # Tietoliikenteen_sovellusprojekti2024
 
-![kuva](thumbnail_arkkitehtuurimalli)
+![kuva](thumbnail_arkkitehtuurimalli.png)
 
 
 
