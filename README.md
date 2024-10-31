@@ -1,5 +1,7 @@
 # Tietoliikenteen_sovellusprojekti2024
 
+![kuva](thumbnail_arkkitehtuurimalli)
+
 
 
 ## Tehtävän kuvaus
