@@ -2,8 +2,8 @@ import requests
 import csv
 
 # Palvelimen IP-osoite ja oikea URL
-server_ip = "172.20.241.41"
-url = f"http://{server_ip}/show_measurements.php"
+server_ip = "172.20.241.9"
+url = f"http://{server_ip}/luedataa_kannasta_groupid_csv.php?groupid=16"
 
 # HTTP GET -pyynnön lähettäminen palvelimelle
 try:
