@@ -15,8 +15,8 @@ MYSQL_PASSWORD = "fasdjkf2389vw2c3k234vk2f3" #avoin tietokanta
 MYSQL_DATABASE = "measurements"  # Tietokannan nimi
 
 # Bluetooth-yhteyden tiedot
-DEVICE_MAC_ADDRESS = "CB:A1:21:38:E5:F2"  # Korvaa tämä Nordic-laitteesi MAC-osoitteella
-CHARACTERISTIC_UUID = "00001526-1212-efde-1523-785feabcd123"  # Korvaa datalähetyksen UUID:llä
+DEVICE_MAC_ADDRESS = "CB:A1:21:38:E5:F2"  # Nordic-laitteen MAC-osoitte
+CHARACTERISTIC_UUID = "00001526-1212-efde-1523-785feabcd123"  # datalähetyksen UUID (notify)
 
 def connect_to_mysql():
     try:
@@ -40,7 +40,7 @@ def insert_data_to_mysql(connection, x, y, z, direction):
             INSERT INTO rawdata (sensorvalue_a, sensorvalue_b, sensorvalue_c, sensorvalue_d, timestamp, groupid) 
             VALUES (%s, %s, %s, %s, NOW(), %s)
         """
-        groupid = 16  # Assigning the groupid value as 16
+        groupid = 16  # Ryhmän numero
         values = (x, y, z, direction, groupid)
         cursor.execute(query, values)
         connection.commit()
@@ -48,10 +48,10 @@ def insert_data_to_mysql(connection, x, y, z, direction):
     except Error as e:
         print(f"Virhe datan tallentamisessa: {e}")
 
-# This is the callback function for receiving notifications
+# Callback functio tietojen tallentamiselle
 def notification_handler(sender: int, data: bytearray):
     try:
-        data_str = data.decode('utf-8')  # Assuming data is a string like "X,Y,Z,Direction"
+        data_str = data.decode('utf-8')  # data on stringi "X,Y,Z,Direction"
         data_values = data_str.split(',')
 
         if len(data_values) == 4:
@@ -63,11 +63,15 @@ def notification_handler(sender: int, data: bytearray):
 
                 print(f"Vastaanotettu data: X={x}, Y={y}, Z={z}, Direction={direction}")
 
-                # Insert data into MySQL database
-                connection = connect_to_mysql()
+                # Kirjoitetaan data MySQL tietokantaan
+                if direction != 0:
+                 connection = connect_to_mysql()
                 if connection:
                     insert_data_to_mysql(connection, x, y, z, direction)
                     connection.close()
+
+                else:
+                    print(f"Suunta-arvo on 0, ei tallenneta.")
 
             except ValueError:
                 print("Virhe datan muunnossa. Varmista, että tiedot ovat kokonaislukuja.")
@@ -78,15 +82,15 @@ def notification_handler(sender: int, data: bytearray):
 
 
 async def main():
-    # Yhdistä Bluetooth-laitteeseen
+    # Yhdistetään Bluetooth-laitteeseen
     async with BleakClient(DEVICE_MAC_ADDRESS) as client:
         print(f"Yhteys Bluetooth-laitteeseen {DEVICE_MAC_ADDRESS} muodostettu")
 
-        # Subscribe to notifications
+        # Subataan notifications
         await client.start_notify(CHARACTERISTIC_UUID, notification_handler)
 
         try:
-            # Keep the script running to receive notifications
+            # Saadaan ilmoituksia (notify) kunnes ohjelma keskeytetään
             while True:
                 await asyncio.sleep(1)
         except KeyboardInterrupt:
