@@ -14,11 +14,14 @@
 #include "my_lbs.h"
 #include "adc.h"
 
+// Define a variable to keep track of the last valid direction
+static uint32_t last_direction = 0;  // Stores the direction before reset
+
 // Lisätty Määrittele neljä arvoa
 static uint32_t app_sensor_x = 0;
 static uint32_t app_sensor_y = 0;
 static uint32_t app_sensor_z = 0;
-static uint32_t app_direction = 0; 
+static uint32_t app_direction = 1; 
 
 
 static struct bt_le_adv_param *adv_param = BT_LE_ADV_PARAM(
@@ -83,16 +86,17 @@ void send_data_thread(void)
 
 	
 		// Lue arvot uudelleen ennen lähettämistä
-        struct Measurement measurement = readADCValue();
-        app_sensor_x = measurement.x;
-        app_sensor_y = measurement.y;
-        app_sensor_z = measurement.z;
+       struct Measurement measurement = readADCValue();
+       app_sensor_x = measurement.x;
+       app_sensor_y = measurement.y;
+       app_sensor_z = measurement.z;
 
 		my_lbs_send_sensor_notify(app_sensor_x, app_sensor_y, app_sensor_z, app_direction);
 	
 		k_sleep(K_MSEC(NOTIFY_INTERVAL));
 	}
 }
+
 
 static struct my_lbs_cb app_callbacks = {
 	.led_cb = app_led_cb,
@@ -114,7 +118,9 @@ static void button_changed(uint32_t button_state, uint32_t has_changed)
     if (has_changed & USER_BUTTON_1) {
         uint32_t user_button1_state = button_state & USER_BUTTON_1;
         if (user_button1_state) {
-            app_direction++;
+            //app_direction++;
+			last_direction = app_direction;
+			app_direction = 0;
             printk("Button 1 pressed, app_direction incremented to: %d\n", app_direction);
         }
     }
@@ -123,21 +129,23 @@ static void button_changed(uint32_t button_state, uint32_t has_changed)
     if (has_changed & USER_BUTTON_2) {
         uint32_t user_button2_state = button_state & USER_BUTTON_2;
         if (user_button2_state) {
-            app_direction = (app_direction + 1) % 6;  // Loop from 0 to 5
-            printk("Button 2 pressed, app_direction looped to: %d\n", app_direction);
+			if (app_direction == 0) {
+            // If app_direction is 0, continue from the last valid direction
+            app_direction = last_direction;  // Use the last valid direction
+            printk("Button 2 pressed, starting from last valid direction: %d\n", app_direction);
         }
 
-		// Kasvata arvoa yhdellä aina kun nappia painetaan
-		//if (user_button_state) {
-		//	app_direction++;
-		//	LOG_INF("Button pressed, app_direction_value: %d", app_direction);
-
-		// käy läpi numerot 0-5 ja looppaa
-		//if (user_button_state) {
-		//	app_direction = (app_direction + 1) % 6;
-		//	printk("Direction updated to: %d\n",app_direction);
-		}
+		 if (app_direction != 0) {
+			//app_direction = (app_direction + 1) % 6;  // Loop from 0 to 5
+            // Increment app_direction and ensure it stays within 1-5 range
+            app_direction = (app_direction % 5) + 1;
+            last_direction = app_direction;  // Update the last valid direction
+            printk("Button 2 pressed, app_direction incremented to: %d\n", app_direction);
+        }
+            
+        }	
 	}
+}
 
 static void on_connected(struct bt_conn *conn, uint8_t err)
 {
