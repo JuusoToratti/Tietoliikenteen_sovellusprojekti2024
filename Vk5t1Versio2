@@ -1,0 +1,172 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from google.colab import files
+from mpl_toolkits.mplot3d import Axes3D
+
+'''
+# Esimerkki
+testidata = np.zeros((10,3))
+print(testidata)
+for i in range (3):
+  testidata[i,:] = np.array((10,5,5))
+
+print(testidata)
+'''
+
+# Ladataan tiedosto omalta koneelta
+#uploaded = files.upload()
+#print(uploaded)
+
+# Funktio kahden 3D-pisteen välisen etäisyyden laskemiseen
+def etaisyys_3d(piste1, piste2):
+    piste1 = np.array(piste1)
+    piste2 = np.array(piste2)
+    etaisyys = np.linalg.norm(piste1 - piste2)
+    return etaisyys
+
+# Excel-tiedosto Pandas DataFrameen
+data = pd.read_csv('data_from_mysql_where_g16.csv')
+
+x = data['sensorvalue_a']
+y = data['sensorvalue_b']
+z = data['sensorvalue_c']
+
+# Selvitetään kuinka monta triplettiä (x, y, z) löytyy
+numberOfRows = len(data)
+print(f"\nTiedostosta löytyy {numberOfRows} triplettiä (x, y, z).")
+
+# Lasketaan minimi- ja maksimiarvot
+min_vals = data[['sensorvalue_a', 'sensorvalue_b', 'sensorvalue_c']].min()
+max_vals = data[['sensorvalue_a', 'sensorvalue_b', 'sensorvalue_c']].max()
+
+print("\nMinimiarvot:\n", min_vals)
+print("\nMaksimiarvot:\n", max_vals)
+
+# Data, joka syötetään K-means algoritmiin
+# Skaalattu data syötetään K-means algoritmiin
+# .T Transponoi matriisin, eli vaihtaa sen rivit ja sarakkeet keskenään
+#data_values = np.array([x, y, z]).T
+
+# Arvotaan keskikohdat satunnaisesti
+n_clusters = 6  # Määritellään, kuinka monta klusteria
+#random_centroids = np.random.rand(n_clusters, 3)  # Arvotaan n_clusters kappaletta satunnaisia pisteitä
+random_centroids = np.random.uniform(low=min_vals.values, high=max_vals.values, size=(n_clusters, len(min_vals)))
+#random_centroids[:, 0] *= x_max  # Skaalataan x-arvot
+#random_centroids[:, 1] *= y_max  # Skaalataan y-arvot
+#random_centroids[:, 2] *= z_max  # Skaalataan z-arvot
+
+# Tulostetaan satunnaisesti arvotut keskipisteet
+print("\nSatunnaisesti arvotut keskipisteet: ", random_centroids)
+
+centerPointCumulativeSum = np.zeros_like(random_centroids)  # 6 riviä, 3 saraketta
+Counts = np.zeros(n_clusters)  # 1 rivi, 6 saraketta
+Distances = np.zeros((n_clusters))
+
+# Ulompi for-looppi käy läpi kaikki datapisteet
+# Lasketaan jokaisen datapisteen etäisyys kaikkiin keskipisteisiin
+# Selvitetään lähin keskipiste (argmin) ja lisätään pisteen koordinaatit kyseisen keskipisteen kumulatiiviseen summaan.
+# Laskuri (Counts) kertoo, montako pistettä kuuluu kuhunkin klusteriin.
+for i in range(numberOfRows):
+    # Lasketaan etäisyydet nykyisestä datapisteestä (x[i], y[i], z[i]) kaikkiin keskipisteisiin
+    for j in range(n_clusters):
+        # Lasketaan euklidinen etäisyys
+        distance = np.linalg.norm(np.array([x[i], y[i], z[i]]) - random_centroids[j])  
+        Distances[j] = distance
+                                  
+     # Selvitetään, mikä keskipiste on lähimpänä
+    closest_centroid_index = np.argmin(Distances)
+
+    # Päivitetään kumulatiiviset summat ja laskurit
+    centerPointCumulativeSum[closest_centroid_index] += np.array([x[i], y[i], z[i]])
+    Counts[closest_centroid_index] += 1
+                                  
+# Tulostetaan lopputulos
+print("\nKeskipisteiden kumulatiiviset summat:\n", centerPointCumulativeSum)
+print("\nKeskipisteiden datapisteiden laskurit:\n", Counts)
+
+# Step 2: Päivitetään keskipisteet voittaneiden pisteiden perusteella
+# Päivitetään keskipisteet laskemalla niiden uusi sijainti datapisteiden keskiarvona.
+# Jos keskipiste ei saanut yhtään pistettä, se arvotaan uudestaan satunnaisesti.
+for i in range(n_clusters):
+    if Counts[i] > 0:
+        random_centroids[i] = centerPointCumulativeSum[i] / Counts[i]
+    else:
+        # Jos ei yhtään voitettua pistettä, arvotaan uusi keskipiste
+        random_centroids[i] = np.random.uniform(low=min_vals.values, high=max_vals.values)
+
+# Toistetaan niin kauan, että keskipisteet eivät liiku
+tolerance = 1e-5  # Toleranssi liikkeelle
+iteration = 0
+max_iterations = 100
+previous_centroids = np.copy(random_centroids)
+
+# Algoritmia toistetaan niin kauan, kunnes keskipisteiden liike on alle määritellyn toleranssin (1e−5),
+# tai enimmäisiterointi (100) saavutetaan.
+while iteration < max_iterations:
+    iteration += 1
+    # Lasketaan etäisyydet ja päivitetään keskipisteet
+    centerPointCumulativeSum.fill(0)
+    Counts.fill(0)
+
+    for i in range(numberOfRows):
+        # Lasketaan etäisyydet nykyisestä datapisteestä (x[i], y[i], z[i]) kaikkiin keskipisteisiin
+        for j in range(n_clusters):
+          # Lasketaan euklidinen etäisyys
+          distance = np.linalg.norm(np.array([x[i], y[i], z[i]]) - random_centroids[j])  
+          Distances[j] = distance
+
+        # Selvitetään, mikä keskipiste on lähimpänä
+        closest_centroid_index = np.argmin(Distances)
+         # Päivitetään kumulatiiviset summat ja laskurit
+        centerPointCumulativeSum[closest_centroid_index] += np.array([x[i], y[i], z[i]])
+        Counts[closest_centroid_index] += 1
+
+    # Päivitetään keskipisteet
+    for i in range(n_clusters):
+        if Counts[i] > 0:
+            random_centroids[i] = centerPointCumulativeSum[i] / Counts[i]
+        else:
+            random_centroids[i] =  np.random.uniform(low=min_vals.values, high=max_vals.values)
+
+    # Tarkistetaan, ovatko keskipisteet muuttuneet
+    if np.all(np.linalg.norm(random_centroids - previous_centroids, axis=1) < tolerance):
+        break
+    previous_centroids = np.copy(random_centroids)
+
+print("\nKeskipisteet on päivitetty.")
+
+# 3D-plottaus
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+
+# pisteet 3D-avaruudessa
+colors = np.random.rand(numberOfRows)
+ax.scatter(x, y, z, c=colors, zorder=1, cmap='viridis', label='Datapisteet')
+ax.set_xlabel('X-akseli')
+ax.set_ylabel('Y-akseli')
+ax.set_zlabel('Z-akseli')
+
+
+# Korostetaan keskipisteet punaisella
+ax.scatter(random_centroids[:, 0], random_centroids[:, 1], random_centroids[:, 2], c='r', marker='x', zorder = 100, s=100, label='Keskipisteet')
+
+# otsikot ja akselit
+ax.set_xlabel('X-akseli')
+ax.set_ylabel('Y-akseli')
+ax.set_zlabel('Z-akseli')
+
+ax.legend()
+
+# Näytetään kuva
+plt.show()
+
+# Näytä keskipisteet C-muodossa
+with open("keskipisteet.h", "w") as f:
+    f.write("int CP[6][3] = {\n")
+    for centroid in random_centroids:
+        f.write("{" + ", ".join(map(str, map(int, centroid))) + "},\n")
+    f.write("};\n")
+
+print("\nkeskipisteet.h luotu.")
