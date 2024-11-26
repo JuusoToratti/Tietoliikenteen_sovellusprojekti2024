@@ -1,0 +1,127 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+import pandas as pd
+from google.colab import files
+from mpl_toolkits.mplot3d import Axes3D
+
+'''
+# Esimerkki
+testidata = np.zeros((10,3))
+print(testidata)
+for i in range (3):
+  testidata[i,:] = np.array((10,5,5))
+
+print(testidata)
+'''
+
+# Ladataan tiedosto omalta koneelta
+#uploaded = files.upload()
+#print(uploaded)
+
+# Funktio kahden 3D-pisteen välisen etäisyyden laskemiseen
+def etaisyys_3d(piste1, piste2):
+    piste1 = np.array(piste1)
+    piste2 = np.array(piste2)
+    etaisyys = np.linalg.norm(piste1 - piste2)
+    return etaisyys
+
+# Excel-tiedosto Pandas DataFrameen
+data = pd.read_csv('data_from_mysql_where_g16.csv')
+
+x = data['sensorvalue_a']
+y = data['sensorvalue_b']
+z = data['sensorvalue_c']
+
+# 3D-plottaus
+#fig = plt.figure()
+#ax = fig.add_subplot(111, projection='3d')
+
+# pisteet 3D-avaruudessa
+#ax.scatter(x, y, z)
+
+# otsikot ja akselit
+#ax.set_xlabel('X-akseli')
+#ax.set_ylabel('Y-akseli')
+#ax.set_zlabel('Z-akseli')
+
+# Näytetään kuva
+#plt.show()
+
+# Data, joka syötetään K-means algoritmiin
+# .T Transponoi matriisin, eli vaihtaa sen rivit ja sarakkeet keskenään
+data_values = np.array([x, y, z]).T
+
+# K-means klusterointi (6 klusteria)
+kmeans = KMeans(n_clusters=6, random_state=0)
+kmeans.fit(data_values)
+
+# Keskipisteet (centroids)
+centroids = kmeans.cluster_centers_
+
+# Tulosta opetetut keskipisteet
+print("Opetetut keskipisteet: \n", centroids)
+
+# Valitaan satunnaisia 3D-pisteitä CSV-tiedostosta
+# Tässä valitaan 5 satunnaista riviä
+satunnaiset_pisteet = data[['sensorvalue_a', 'sensorvalue_b', 'sensorvalue_c']].sample(n=5, random_state=42)
+
+# Tulostetaan satunnaiset pisteet
+print("\nSatunnaisesti valitut pisteet:")
+print(satunnaiset_pisteet,"\n")
+
+# Lasketaan etäisyydet valittujen satunnaisten pisteiden välillä
+for i in range(len(satunnaiset_pisteet)):
+    for j in range(i + 1, len(satunnaiset_pisteet)):
+        piste1 = satunnaiset_pisteet.iloc[i].values
+        piste2 = satunnaiset_pisteet.iloc[j].values
+        etaisyys = etaisyys_3d(piste1, piste2)
+        print(f"Etäisyys pisteen {i+1} ja pisteen {j+1} välillä: {etaisyys:.2f}")
+
+# Minimi- ja maksimiarvot kullekin klusterille
+for i in range(6):
+    # Ota kaikki pisteet, jotka kuuluvat tähän klusteriin
+    cluster_points = data_values[kmeans.labels_ == i]
+    
+    # Laske minimi- ja maksimiarvot
+    min_values = cluster_points.min(axis=0)
+    max_values = cluster_points.max(axis=0)
+    
+    print(f"\nKlusteri {i+1}:")
+    print(f"  Minimiarvot: {min_values}")
+    print(f"  Maksimiarvot: {max_values}\n")
+
+# Lasketaan etäisyydet keskipisteiden välillä ja tulostetaan
+for i in range(6):
+    for j in range(i + 1, 6):  # Varmistetaan, että jokainen pari otetaan vain kerran
+        etaisyys = etaisyys_3d(centroids[i], centroids[j])
+        print(f"Etäisyys klusterin {i+1} ja klusterin {j+1} keskipisteiden välillä: {etaisyys:.2f}")
+
+# 3D-plottaus
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# pisteet 3D-avaruudessa
+#ax.scatter(x, y, z, c=kmeans.labels_, zorder = 1, cmap='viridis', label='Datapisteet')
+
+# Korostetaan keskipisteet punaisella
+ax.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2], c='r', marker='x', zorder = 100, s=100, label='Keskipisteet')
+
+# otsikot ja akselit
+ax.set_xlabel('X-akseli')
+ax.set_ylabel('Y-akseli')
+ax.set_zlabel('Z-akseli')
+
+ax.legend()
+
+# Näytetään kuva
+plt.show()
+
+# Näytä keskipisteet C-muodossa
+with open("keskipisteet.h", "w") as f:
+    f.write("int CP[6][3] = {\n")
+    for centroid in centroids:
+        f.write("{" + ", ".join(map(str, map(int, centroid))) + "},\n")
+    f.write("};\n")
+
+print("\nkeskipisteet.h luotu.")
