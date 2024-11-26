@@ -18,6 +18,7 @@ MYSQL_DATABASE = "measurements"  # Tietokannan nimi
 DEVICE_MAC_ADDRESS = "CB:A1:21:38:E5:F2"  # Nordic-laitteen MAC-osoitte
 CHARACTERISTIC_UUID = "00001526-1212-efde-1523-785feabcd123"  # datalähetyksen UUID (notify)
 
+
 def connect_to_mysql():
     try:
         connection = mysql.connector.connect(
@@ -50,6 +51,7 @@ def insert_data_to_mysql(connection, x, y, z, direction):
 
 # Callback functio tietojen tallentamiselle
 def notification_handler(sender: int, data: bytearray):
+
     try:
         data_str = data.decode('utf-8')  # data on stringi "X,Y,Z,Direction"
         data_values = data_str.split(',')
@@ -63,15 +65,15 @@ def notification_handler(sender: int, data: bytearray):
 
                 print(f"Vastaanotettu data: X={x}, Y={y}, Z={z}, Direction={direction}")
 
-                # Kirjoitetaan data MySQL tietokantaan
+                # Kirjoitetaan data MySQL tie
+                # tokantaan
                 if direction != 0:
                  connection = connect_to_mysql()
                 if connection:
                     insert_data_to_mysql(connection, x, y, z, direction)
                     connection.close()
-
                 else:
-                    print(f"Suunta-arvo on 0, ei tallenneta.")
+                    print("MySQL yhteytte ei voitu muodostaa.")
 
             except ValueError:
                 print("Virhe datan muunnossa. Varmista, että tiedot ovat kokonaislukuja.")
