@@ -138,7 +138,7 @@ static void button_changed(uint32_t button_state, uint32_t has_changed)
 		 if (app_direction != 0) {
 			//app_direction = (app_direction + 1) % 6;  // Loop from 0 to 5
             // Increment app_direction and ensure it stays within 1-5 range
-            app_direction = (app_direction % 5) + 1;
+            app_direction = (app_direction % 6) + 1;
             last_direction = app_direction;  // Update the last valid direction
             printk("Button 2 pressed, app_direction incremented to: %d\n", app_direction);
         }
