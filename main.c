@@ -45,8 +45,6 @@ static int direction = -1;	// 0 = x direction high // CP[1] // suunta 4
 
 LOG_MODULE_REGISTER(MAIN, LOG_LEVEL_INF);
 
-
-
 static void button_changed(uint32_t button_state, uint32_t has_changed)
 {
 	//printk("button_state = %d\n",button_state);
@@ -114,12 +112,12 @@ static void button_changed(uint32_t button_state, uint32_t has_changed)
 	}		
 }
 
-
 void main(void)
 {
 	// Siemen satunnaislukugeneraattorille
     srand(time(NULL));
 
+	// Testejä
 	//int x =1511, y = 1384, z = 1807; // suunta 1
 	//int x =1212, y = 1487, z = 1535; // suunta 2
 	//int x =1505, y = 1595, z = 1248; // suunta 3
@@ -128,7 +126,6 @@ void main(void)
 	//int x =1520, y = 1771, z = 1631; // suunta 6
 
     int winner = calculateDistanceToAllCentrePointsAndSelectWinner(x, y, z);
-    //void makeHundredFakeClassifications();
     
 	int err;
 	err = dk_leds_init();
