@@ -30,3 +30,4 @@ Projektin tehtävänä on suunnitella **Thingy**-laitteelle client-sovellus, jok
 3. TCP-client, joka lukee tietokannasta dataa (Python).
 4. K-means-opetusalgoritmin soveltaminen ja opetusvaihe (Python).
 5. K-means-mittaukset ja **confusion matrix** -analyysi Thingyllä (C & NRF5340DK).
+![kuva](confusionMatrix.png)
