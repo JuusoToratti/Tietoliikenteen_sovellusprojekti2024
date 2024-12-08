@@ -18,7 +18,7 @@ Projektiin sisältyi myös liiketoimintaosaamisen ja viestinnän opiskelua. Proj
 
 Projekti käynnistettiin luomalla GitHub-repositorio, arkkitehtuurikaavio ja alustamalla Kanban-taulu projektinhallintaa varten. Raspberry Pi -laitteen käyttöönotto suoritettiin onnistuneesti ilman merkittäviä ongelmia. Lisäksi Linux-palvelin asennettiin ja otettiin käyttöön molempien ryhmän jäsenten työympäristöihin.
 
-**Kuva arkkitehtuurikaaviosta**
+![kuva](thumbnail_arkkitehtuurimalli.png)
 
 ### Toinen viikko
 
