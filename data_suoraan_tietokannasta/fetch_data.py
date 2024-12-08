@@ -30,7 +30,7 @@ try:
     
     # Luo kursori ja suorita SQL-kysely
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM rawdata")  # Muokkaa tämä kysely omasi mukaan
+    cursor.execute("SELECT * FROM rawdata")  # Muokkaa tämä kysely haluamasi datan mukaan
     
     # Hae kaikki rivit tuloksista
     rows = cursor.fetchall()
