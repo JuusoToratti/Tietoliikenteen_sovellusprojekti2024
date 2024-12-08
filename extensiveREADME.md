@@ -24,7 +24,7 @@ Projekti käynnistettiin luomalla GitHub-repositorio, arkkitehtuurikaavio ja alu
 
 Toisella viikolla projekti eteni siihen vaiheeseen, että kiihtyvyysanturi konfiguroitiin lähettämään XYZ-dataa kehitysalustan Bluetooth-toiminnallisuuden avulla älypuhelimeen ladattuun nRF Connect-sovellukseen. Lisäksi ryhmän jäsenet suorittivat Nordic Academyn Bluetooth Low Energy Fundamentals -kurssin ja saivat siitä todistuksen.
 
-**Kuva kiihtyvyysanturista ja kehitysalustasta**
+![kuva](kiihtyvyysanturi.png)
 
 ### Kolmas viikko
 
