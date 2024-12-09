@@ -8,10 +8,8 @@ import requests
 
 # MySQL-tietokantayhteyden tiedot
 MYSQL_HOST = "172.20.241.9" #avoin tietokanta
-#MYSQL_HOST = "172.20.241.41"
 MYSQL_USER = "dbaccess_rw"
 MYSQL_PASSWORD = "fasdjkf2389vw2c3k234vk2f3" #avoin tietokanta
-#MYSQL_PASSWORD = "jokusalasana123"
 MYSQL_DATABASE = "measurements"  # Tietokannan nimi
 
 # Bluetooth-yhteyden tiedot
