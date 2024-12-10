@@ -50,9 +50,9 @@ void printConfusionMatrix(void)
 	}
 }
 
-// Simuloitu satunnaisgeneraattori
+// Simuloidaan satunnaisgeneraattori
 int simple_random(void) {
-    return rand();  // Palauttaa satunnaisen kokonaisluvun
+    return rand();  // Palautetaan satunnaisen kokonaisluvun
 }
 
 void makeHundredFakeClassifications(void)
