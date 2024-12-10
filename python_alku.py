@@ -7,14 +7,14 @@ import json
 import requests
 
 # MySQL-tietokantayhteyden tiedot katso discordista tiedot
-MYSQL_HOST = "server_ip" #avoin tietokanta
-MYSQL_USER = "username"
-MYSQL_PASSWORD = "password" #avoin tietokanta
+MYSQL_HOST = "server_ip" # Serverin IP-osoite
+MYSQL_USER = "username" # Käyttäjänimi
+MYSQL_PASSWORD = "password" # Tietokannan salasana
 MYSQL_DATABASE = "measurements"  # Tietokannan nimi
 
 # Bluetooth-yhteyden tiedot
-DEVICE_MAC_ADDRESS = "MAC_address"  # Nordic-laitteen MAC-osoitte tarkista laite
-CHARACTERISTIC_UUID = "UUID"  # datalähetyksen UUID (notify)
+DEVICE_MAC_ADDRESS = "MAC_address"  # Nordic-laitteen MAC-osoite
+CHARACTERISTIC_UUID = "UUID"  # datalähetyksen UUID (käytettiin notify)
 
 
 def connect_to_mysql():
