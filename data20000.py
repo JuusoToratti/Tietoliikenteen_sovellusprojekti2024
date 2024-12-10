@@ -2,7 +2,7 @@ import socket
 
 # Avaataan socket-yhteys palvelimelle
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('172.20.241.9', 20000))
+s.connect(('server_ip', 20000))
 s.sendall(b'16\n')
 
 chunks = []
