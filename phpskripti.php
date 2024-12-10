@@ -1,7 +1,7 @@
 <?php
-$servername = "172.20.241.9";
-$username = "dbaccess_rw"; // katso discordin pinned-viesteistä
-$password = "fasdjkf2389vw2c3k234vk2f3"; // katso discordin pinned-viesteistä
+$servername = "server_ip";
+$username = "username"; // katso discordin pinned-viesteistä
+$password = "password"; // katso discordin pinned-viesteistä
 $dbname = "measurements";
 $groupid = 16; // oma groupid
 
