@@ -52,6 +52,8 @@ Seuraavaksi toteutettiin Python-koodi, joka pystyy laskemaan neuroverkon tulokse
 
 Toteutimme K-means-algoritmin nRF5340DK-alustalle. Mittasimme kiihtyvyysanturilla x-, y- ja z-kiihtyvyysarvot ja laskimme 3D-pisteen etäisyyden kaikkiin kuuteen keskipisteeseen, jotka oli opetettu edellisellä viikolla Pythonilla. Toteutimme confusion.c-tiedostoon puuttuvat aliohjelmat ja suoritimme mittaukset omalla laitteella ja kiihtyvyysanturilla. Tuloksena saatiin confusion matrix, joka kuvasi K-means-luokittelualgoritmin toimintaa ja tarkkuutta. Lisäsimme confusion matrix -kuvan omaan GitHub-repositorioon README-tiedostoon.
 
+![kuva](confusionMatrix.png)
+
 Viikon ylimääräinen tavoite oli toteuttaa Colabissa opettamamme neuroverkko nRF5340DK-alustalle ja arvioida algoritmin suorituskykyä laskemalla ja tulostamalla confusion matrixin.
 
 ### Seitsemäs viikko ja kurssin lopetus
