@@ -6,15 +6,15 @@ import asyncio
 import json
 import requests
 
-# MySQL-tietokantayhteyden tiedot
-MYSQL_HOST = "172.20.241.9" #avoin tietokanta
-MYSQL_USER = "dbaccess_rw"
-MYSQL_PASSWORD = "fasdjkf2389vw2c3k234vk2f3" #avoin tietokanta
+# MySQL-tietokantayhteyden tiedot katso discordista tiedot
+MYSQL_HOST = "server_ip" #avoin tietokanta
+MYSQL_USER = "username"
+MYSQL_PASSWORD = "password" #avoin tietokanta
 MYSQL_DATABASE = "measurements"  # Tietokannan nimi
 
 # Bluetooth-yhteyden tiedot
-DEVICE_MAC_ADDRESS = "CB:A1:21:38:E5:F2"  # Nordic-laitteen MAC-osoitte
-CHARACTERISTIC_UUID = "00001526-1212-efde-1523-785feabcd123"  # datalähetyksen UUID (notify)
+DEVICE_MAC_ADDRESS = "MAC_address"  # Nordic-laitteen MAC-osoitte tarkista laite
+CHARACTERISTIC_UUID = "UUID"  # datalähetyksen UUID (notify)
 
 
 def connect_to_mysql():
